@@ -2,10 +2,7 @@ package model;
 
 import helper.MyConnection;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class pengguna {
@@ -32,13 +29,20 @@ public class pengguna {
     public void create(){
         String createSQL = "INSERT INTO `pengguna` (`id`, `username`, `password`, `namaLengkap`, `level`) " +
                 "VALUES " +
-                "(NULL, '"+this.username+"', MD5('"+this.password+"'), '"+this.namaLengkap+"', '"+this.level+"')";
+                "(NULL, ?, MDS(?), ?, ?)";
 
         MyConnection m = new MyConnection();
         this.connection = m.getConnection();
         try {
-            Statement statement = this.connection.createStatement();
-            statement.execute(createSQL);
+//            Statement statement = this.connection.createStatement();
+            PreparedStatement preparedStatement = this.connection.prepareStatement(createSQL);
+            preparedStatement.setString(1, this.username);
+            preparedStatement.setString(2, this.password);
+            preparedStatement.setString(3, this.namaLengkap);
+            preparedStatement.setString(4, this.level);
+            preparedStatement.execute();
+
+//            statement.execute(createSQL);
             System.out.println("Berhasil Create Data");
         } catch (SQLException e) {
             System.out.println("Error Create Data");
